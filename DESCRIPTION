@@ -1,0 +1,19 @@
+Package: OrthologMatcher
+Title: A package to extract the 1-to-1 orthologous genes across multiple species
+Version: 1.0.0
+Authors@R: c(
+    person("Ming-an", "Sun", email="mingansun@gmail.com", role = c("aut","cre")),
+    person("Jiajia", "Gong", role = c("aut"))
+    )
+Maintainer: Ming-an Sun <mingansun@gmail.com>
+Description: OrthologMatcher can determine the 1-to-1 orthologous genes across 
+    multiple species by automaically retriving the Ensembl ortholog annotation data.
+    The generated orthologous matching result can be output as a matrix or detailed
+    lists, which can be used for further evolutionary analysis.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports: 
+    biomaRt,
+    dplyr
