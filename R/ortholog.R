@@ -264,9 +264,8 @@ ortholog_match <- function(species_list, species_anchor, host) {
   attr(formatted_orthologs, "Species_anchor") <- anchor
   attr(formatted_orthologs, "Species")        <- species_list
   attr(formatted_orthologs, "SpeciesAbbr")    <- species_abbr
-  attr(formatted_orthologs, "SpeciesAbbr")    <- species_abbr
-  
   attr(formatted_orthologs, "GeneID_matrix")  <- extract_ortholog_matrix(formatted_orthologs, "GeneID")
   attr(formatted_orthologs, "GeneName_matrix")  <- extract_ortholog_matrix(formatted_orthologs, "GeneName")
+  
   return(formatted_orthologs)  
 }
