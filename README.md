@@ -25,7 +25,7 @@ __To load the OrthologMatcher package:__
 library(OrthologMatcher)
 
 ## How to use OrthologMatcher
-Please refer to the Vignette about how to use __OrthologMatcher__ to extract and summarize
+Please refer to the manual about how to use __OrthologMatcher__ to extract and summarize
 the ortholog matching data by using the two main function: __ortholog_match__ and 
 __extract__ortholog_matrix__.
 
