@@ -9,6 +9,7 @@ used for further evolutionary analysis.
 __OrthologMatcher__ can be installed using the __install_git__ function from devtools
 package. However, it depends on several other R packages, which should be 
 installed first.
+
 __To install OrthologMatcher and its dependencies:__
 
 install.packages("BiocManager")
