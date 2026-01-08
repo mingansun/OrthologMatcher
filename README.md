@@ -13,7 +13,9 @@ __To install OrthologMatcher and its dependencies:__
 
 install.packages("BiocManager")
 
-BiocManager::install(c("biomaRt", "dplyr"))
+BiocManager::install("biomaRt")
+
+install.packages("dplyr")
 
 install.packages("devtools")
 
