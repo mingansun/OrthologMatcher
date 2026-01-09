@@ -1,4 +1,4 @@
-# OrthologMatcher: an R package to extract the 1-to-1 orthologous genes across multiple speciess
+# OrthologMatcher: an R package to extract the 1-to-1 orthologous genes across multiple species
 ---
 __OrthologMatcher__ is an R package to determine the 1-to-1 orthologous genes
 across multiple species by automaically retriving the Ensembl ortholog annotation
