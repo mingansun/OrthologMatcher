@@ -51,10 +51,14 @@ list_species <- function(pattern){
   df_species$Species <- sub("\\s+genes\\s+\\(.*$","", df_species$Species)
   
   # reformat and filter species list
-  idx.flt <- sort(unique(c(
+  idx.flt <- sort(
+    unique(
+      c(
     grep(pattern = pattern, df_species$Dataset, ignore.case = TRUE),
     grep(pattern = pattern, df_species$Species, ignore.case = TRUE)
-  )))
+      )
+    )
+  )
   df_species.flt <- df_species[idx.flt,]
   
   # return
