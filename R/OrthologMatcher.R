@@ -1,9 +1,9 @@
-#' OrthologMatcher: a package to extract the 1-to-1 orthologous genes across multiple species
+#' OrthologMatcher: a package to extract 1-to-1 orthologues across multiple species
 #'
 #' The package can determine the 1-to-1 orthologous genes across multiple species
 #' by automaically retriving the Ensembl ortholog annotation data. The generated
 #' orthologous matching result can be output as a matrix or detailed lists, which
-#' can be used for further evolutionary analysis.
+#' can be used for further analysis and visualization.
 #'
 #' @section OrthologMatcher functions:
 #'
@@ -13,7 +13,7 @@
 #' \code{\link{extract_ortholog_matrix}}
 #' Convert the 1-to-1 orthologous information across multiple species to a matrix
 #'
-#' \code{\link{list_species}}
+#' \code{\link{list_supported_species}}
 #' List all supported species
 #' 
 #' \code{\link{summarize_ortholog_gene}}
@@ -21,6 +21,15 @@
 #' 
 #' \code{\link{verify_ortholog_data}}
 #' Verify if the orthologue matching data is normal 
+#'
+#' \code{\link{assign_expression_data}}
+#' Assign expression data to the ortholog matrix
+#'
+#' \code{\link{plot_correlation_heatmap}}
+#' Plot the correlation heatmap based on expression matrix
+#'
+#' \code{\link{plot_PCA_biplot}}
+#' Plot the PCA biplot based on expression matrix
 #'
 #' @name OrthologMatcher-package
 NULL

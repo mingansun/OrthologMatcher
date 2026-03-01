@@ -1,0 +1,11 @@
+File,Species,FullName,AbbrName,IdColumn,ExprColumn,ExprType,RepIndex
+Homo_sapiens.DunnFletcher_r1.genes.results,human,Homo sapiens,hsapiens,1,6,tpm,1
+Homo_sapiens.DunnFletcher_r2.genes.results,human,Homo sapiens,hsapiens,1,6,tpm,2
+Mus_musculus.DunnFletcher2018_r1.genes.results,mouse,Mus musculus,mmusculus,1,6,tpm,1
+Mus_musculus.DunnFletcher2018_r2.genes.results,mouse,Mus musculus,mmusculus,1,6,tpm,2
+Bos_taurus.Moradi2022_r1.genes.results,cattle,Bos taurus,btaurus  ,1,6,tpm,1
+Bos_taurus.Moradi2022_r2.genes.results,cattle,Bos taurus,btaurus  ,1,6,tpm,2
+Sus_scrofa.Wang2019_r1.genes.results,pig,Sus scrofa,sscrofa,1,6,tpm,1
+Sus_scrofa.Wang2019_r2.genes.results,pig,Sus scrofa,sscrofa,1,6,tpm,2
+Monodelphis_domestica.Necsulea2014_r1.genes.results,opossum,Monodelphis domestica,mdomestica,1,6,tpm,1
+Monodelphis_domestica.Necsulea2014_r2.genes.results,opossum,Monodelphis domestica,mdomestica,1,6,tpm,2

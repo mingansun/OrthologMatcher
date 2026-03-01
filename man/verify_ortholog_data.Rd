@@ -19,7 +19,10 @@ attribute is present, try to set as Species_1, Species_2 etc, and return
 the updated data. The species name is required for some other functions.
 }
 \examples{
+# get ortholog matching information
 hs2mm.orth <- ortholog_match(c("human", "mouse"))
+
+# verify the obtained ortholog matching information
 hs2mm.orth <- verify_ortholog_data(hs2mm.orth)
 
 }

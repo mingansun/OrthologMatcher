@@ -2,7 +2,7 @@
 % Please edit documentation in R/generic.R
 \name{extract_ortholog_matrix}
 \alias{extract_ortholog_matrix}
-\title{Convert the 1-to-1 orthologous information across multiple species to a matrix}
+\title{Convert the 1-to-1 orthologous information for multiple species to a matrix}
 \usage{
 extract_ortholog_matrix(x, gene_attr = "GeneID")
 }
@@ -16,10 +16,10 @@ which are available for each species in the list generated using
 }
 \value{
 Matrix, with rows as GeneID or GeneName, and columns as species. This matrix
-can be used for subsequent analysis of the 1:1 orthologs across all the involved
-species. This is different from the list generated using \code{\link{ortholog_match}},
-which contains rich information of the orthologs for each species, yet are not
-merged together as a matrix.
+can be used for subsequent analysis of the 1:1 orthologs across all the
+involved species. This is different from the list generated using
+\code{\link{ortholog_match}}, which contains rich information of the orthologs
+for each species, yet are not merged together as a matrix.
 }
 \description{
 Examine given data to see if its format is normal. Further, if no "Species"
@@ -27,7 +27,19 @@ attribute is present, try to set as Species_1, Species_2 etc, and return
 the updated data. The species name is required for some other functions.
 }
 \examples{
-hs2mm2ss.orth <- ortholog_match(c("human", "mouse", "pig"))
-hs2mm2ss.orth.GeneID.matrix <- extract_ortholog_matrix(hs2mm2ss.orth, "GeneID")
+# get ortholog matching information
+hs2mm2ss.orth <- ortholog_match(
+  c("human", "mouse", "pig")
+)
+
+# extract ortholog matching matrix for GeneID
+hs2mm2ss.orth.GeneID.matrix <- extract_ortholog_matrix(
+  hs2mm2ss.orth, "GeneID"
+)
+
+# extract ortholog matching matrix for GeneName
+hs2mm2ss.orth.GeneID.matrix <- extract_ortholog_matrix(
+  hs2mm2ss.orth, "GeneName"
+)
 
 }

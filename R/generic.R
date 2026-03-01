@@ -1,7 +1,7 @@
 ################################################################################
-#    match 1-to-1 orthologous genes across multiple species
+#    generic function for processing the species and ortholog data
 # ------------------------------------------------------------------------------
-# list_species
+# list_supported_species
 # summarize_ortholog_gene
 # verify_ortholog_data
 # extract_ortholog_matrix
@@ -9,11 +9,11 @@
 
 
 ############################################################################
-#' List all supported species
+#' List all supported species from ENSEMBL database
 #'
 #' Only species with genome available in ENSEMBL database are supported.
-#' This function will show the information for all these species, or those filtered
-#' by the user specified pattern.
+#' This function will show the information for all these species, or those
+#' filtered by the user specified pattern.
 #'
 #' @param pattern
 #' The pattern to filtering the species list. The pattern will be searched
@@ -24,16 +24,19 @@
 #' Data frame, with the information for supported species
 #'
 #' @examples
-#' # list all species based on locally saved species list file
-#' list_species()
+#' ## list all species based on locally saved species list file
+#' list_supported_species()
 #'
-#' # list all species with common or scientific name matching given pattern
-#' list_species(pattern = "human")
-#' list_species(pattern = "sapiens")
-#' list_species(pattern = "macaque")
+#' ## list all species with common or scientific name matching given pattern
+#' # human
+#' list_supported_species(pattern = "human")
+#' list_supported_species(pattern = "sapiens")
+#' 
+#' # macaque
+#' list_supported_species(pattern = "macaque")
 #'
 #' @export
-list_species <- function(pattern){
+list_supported_species <- function(pattern){
   
   opts <- options(stringsAsFactors = FALSE)
   
@@ -47,14 +50,18 @@ list_species <- function(pattern){
   df_species <- biomaRt::listDatasets(mart = ensembl)
   # reformat
   colnames(df_species) <- c("Dataset", "Species", "Version")
-  df_species$Dataset <- sub("_gene_ensembl$","", df_species$Dataset)
-  df_species$Species <- sub("\\s+genes\\s+\\(.*$","", df_species$Species)
+  df_species$Dataset <- sub("_gene_ensembl$", "", df_species$Dataset)
+  df_species$Species <- sub("\\s+genes\\s+\\(.*$", "", df_species$Species)
   
   # reformat and filter species list
-  idx.flt <- sort(unique(c(
-    grep(pattern = pattern, df_species$Dataset, ignore.case = TRUE),
-    grep(pattern = pattern, df_species$Species, ignore.case = TRUE)
-  )))
+  idx.flt <- sort(
+    unique(
+      c(
+        grep(pattern = pattern, df_species$Dataset, ignore.case = TRUE),
+        grep(pattern = pattern, df_species$Species, ignore.case = TRUE)
+        )
+      )
+    )
   df_species.flt <- df_species[idx.flt,]
   
   # return
@@ -66,8 +73,9 @@ list_species <- function(pattern){
 #' Summarize the orthologues for each genetype or chromosome
 #'
 #' @param x
-#' Data frame with ortholog annotations for corresponding species. It is generated
-#' using ortholog_match(species_list=c()).
+#' Data frame with ortholog annotations for corresponding species. It is
+#' generated using ortholog_match(species_list=c()).
+#' 
 #' @param group
 #' genetype or chrom, the number of genes for each group based on specified
 #' tags will be listed.
@@ -76,7 +84,10 @@ list_species <- function(pattern){
 #' Data frame with the count of genes for each genetype or chrom in each species.
 #'
 #' @examples
+#' # get ortholog matching information
 #' hs2mm2ss.orth <- ortholog_match(species_list=c("human", "mouse","pig"))
+#' 
+#' # summarize the obtained ortholog matching information
 #' summarize_ortholog_gene(hs2mm2ss.orth, "genetype")
 #'
 #' @export
@@ -107,11 +118,15 @@ summarize_ortholog_gene <- function(x, group = c("genetype", "chrom")){
   
   for(i in 1:length(x)) {
     if(group == "genetype") {
-      gene_grp      <- unique(c(gene_grp, x[[i]]$GeneType))
+      gene_grp      <- unique(
+        c(gene_grp, x[[i]]$GeneType)
+        )
       gene_cnt[[i]] <- table(x[[i]]$GeneType)
     }
     if(group == "chrom") {
-      gene_grp      <- unique(c(gene_grp, x[[i]]$Chrom))
+      gene_grp      <- unique(
+        c(gene_grp, x[[i]]$Chrom)
+        )
       gene_cnt[[i]] <- table(x[[i]]$Chrom)
     }
   }
@@ -129,6 +144,7 @@ summarize_ortholog_gene <- function(x, group = c("genetype", "chrom")){
   return(mat)
 }
 
+################################################################################
 #' Verify if the orthologue matching data is normal
 #'
 #' Examine given data to see if its format is normal. Further, if no "Species"
@@ -143,7 +159,10 @@ summarize_ortholog_gene <- function(x, group = c("genetype", "chrom")){
 #' List, unchanged/updated data with the same structre as the input data x.
 #'
 #' @examples
+#' # get ortholog matching information
 #' hs2mm.orth <- ortholog_match(c("human", "mouse"))
+#' 
+#' # verify the obtained ortholog matching information
 #' hs2mm.orth <- verify_ortholog_data(hs2mm.orth)
 #'
 #' @export
@@ -176,14 +195,17 @@ verify_ortholog_data <- function (x) {
   }
   if(length(attr(x, "Species")) != length(x)) {
     attr(x,"Species") <- paste0("Species_", 1:length(x))
-    warning("attr(x,\"Species\") has different length to x. Change to Species_1, Species_2 etc.")
+    warning(
+      "attr(x,\"Species\") has different length to x. ",
+      "Change to Species_1, Species_2 etc."
+      )
   }
   
   return(x)
 }
 
-
-#' Convert the 1-to-1 orthologous information across multiple species to a matrix
+################################################################################
+#' Convert the 1-to-1 orthologous information for multiple species to a matrix
 #'
 #' Examine given data to see if its format is normal. Further, if no "Species"
 #' attribute is present, try to set as Species_1, Species_2 etc, and return
@@ -201,15 +223,27 @@ verify_ortholog_data <- function (x) {
 #'
 #' @return
 #' Matrix, with rows as GeneID or GeneName, and columns as species. This matrix
-#' can be used for subsequent analysis of the 1:1 orthologs across all the involved
-#' species. This is different from the list generated using \code{\link{ortholog_match}},
-#' which contains rich information of the orthologs for each species, yet are not
-#' merged together as a matrix.
+#' can be used for subsequent analysis of the 1:1 orthologs across all the
+#' involved species. This is different from the list generated using
+#' \code{\link{ortholog_match}}, which contains rich information of the orthologs
+#' for each species, yet are not merged together as a matrix.
 #'
 #' @examples
-#' hs2mm2ss.orth <- ortholog_match(c("human", "mouse", "pig"))
-#' hs2mm2ss.orth.GeneID.matrix <- extract_ortholog_matrix(hs2mm2ss.orth, "GeneID")
-#'
+#' # get ortholog matching information
+#' hs2mm2ss.orth <- ortholog_match(
+#'   c("human", "mouse", "pig")
+#' )
+#' 
+#' # extract ortholog matching matrix for GeneID
+#' hs2mm2ss.orth.GeneID.matrix <- extract_ortholog_matrix(
+#'   hs2mm2ss.orth, "GeneID"
+#' )
+#' 
+#' # extract ortholog matching matrix for GeneName
+#' hs2mm2ss.orth.GeneID.matrix <- extract_ortholog_matrix(
+#'   hs2mm2ss.orth, "GeneName"
+#' )
+#' 
 #' @export
 extract_ortholog_matrix <- function (x, gene_attr = "GeneID") {
   

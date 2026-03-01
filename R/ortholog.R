@@ -4,61 +4,86 @@
 # ortholog_match
 ################################################################################
 
+################################################################################
 #' Match the 1-to-1 orthologous genes across multiple species
 #'
 #' Ortholog matching is performed based on the ortholog information retrieved
-#' from ENSEMBL. The R package biomaRt is used to access ENSEMBL.To work properly,
-#' make sure biomaRt package is installed and the internet connection works.
-#' It may take sometime to download data from ENSEMBL - depending on the
+#' from ENSEMBL. The R package biomaRt is used to access ENSEMBL.To work
+#' properly, make sure biomaRt package is installed and the internet connection
+#' works. It may take sometime to download data from ENSEMBL - depending on the
 #' network speed. Only species with their genomes availale in ENSEMBL database
-#' are supported. Use \code{\link{list_species}} to get the information for
-#' all the supported species.
+#' are supported. Use \code{\link{list_supported_species}} to get the 
+#' information for all the supported species.
 #'
 #' @param species_list
 #' A vector for all the species to be analyzed. Should be common names such as 
-#' "human", "mouse", etc. Use \code{\link{list_species}} to get the names of all
-#' supported species.
+#' "human", "mouse", etc. Use \code{\link{list_supported_species}} to get the 
+#' names of all supported species. This parameter is case-insensitive.
+#' 
 #' @param species_anchor
-#' A species name from the provided species_list. This species will server as the
-#' anchor to be compared against by all other species. Default:The first species
-#' from the provided species_list.
+#' A species name from the provided species_list. This species will server as
+#' the anchor to be compared against by all other species. Default:The first
+#' species from the provided species_list.
+#' 
 #' @param host
-#' ENSEMBL host (mirror) to connect to. Default: www.ensembl.org. By default, 
-#' bioMart uses the latest releases of genome assemblies from the ENSEMBL database,
-#' which may not match the genome version of given data sometimes. Earlier releases
-#' can be used by specifying an archieved host address, which can be  found from
-#' the ENSEMBL website.
+#' ENSEMBL host (mirror) to connect to. Default: https://www.ensembl.org. By
+#' default, bioMart uses the latest releases of genome assemblies from the
+#' ENSEMBL database, which may not match the genome version of given data
+#' sometimes. Earlier releases can be used by specifying an archieved host
+#' address, which can be  found from the ENSEMBL website.
 #'
 #' @return
-#' A matrix with the information for 1-to-1 ortholog pairs. The list has corresponding 
-#' species data frames (each for one species) with columns GeneID, GeneName, 
-#' Chrom,GeneType. Additonal attributes including Species and SpeciesAbbr are 
-#' also attached to the return list.
+#' A matrix with the information for 1-to-1 ortholog pairs. The list has
+#' corresponding species data frames (each for one species) with columns GeneID,
+#' GeneName, Chrom,GeneType. Additonal attributes including Species and
+#' SpeciesAbbr are also attached to the return list.
 #' 
 #' @examples
-#' # Get 1:1 orthologs between different pairs of species
-#' hs2mm.orth <- ortholog_match(species_list = c("human", "mouse"))
-#' hs2mm2ss.orth <- ortholog_match(species_list = c("human", "mouse", "pig"))
+#' ## Get 1:1 orthologs between any numbers of supplied species
 #' 
-#' #Specify mouse as the anchor species
+#' # Two species
+#' hs2mm.orth <- ortholog_match(
+#'   species_list = c("human", "mouse")
+#' )
+#' 
+#' # Three species
 #' hs2mm2ss.orth <- ortholog_match(
-#'   species_list = c("human", "mouse", "pig"), species_anchor = "mouse"
+#'   species_list = c("human", "mouse", "pig")
+#' )
+#' 
+#' # Ten species
+#' species5.orth <- ortholog_match(
+#'   species_list = c(
+#'   "human", "mouse", "cattle", "pig", "opossum"
+#'   )
+#' )
+#' 
+#' ## Specify mouse, instead of human, as the anchor species
+#' hs2mm2ss.orth <- ortholog_match(
+#'   species_list = c("human", "mouse", "pig"),
+#'   species_anchor = "mouse"
 #' )
 #'
-#' # Choose to use different host (mirrors) for ENSEMBL
+#' ## Use different host (mirrors) for ENSEMBL
 #' hs2mm2ss.orth <- ortholog_match(
-#'   species_list = c("human", "mouse", "pig"), host = "www.ensembl.org"
+#'   species_list = c("human", "mouse", "pig"),
+#'   host = "https://www.ensembl.org"
 #' )
+#' 
 #' hs2mm2ss.orth <- ortholog_match(
-#'   species_list = c("human", "mouse", "pig"), host = "useast.ensembl.org"
+#'   species_list = c("human", "mouse", "pig"),
+#'   host = "https://useast.ensembl.org"
 #' )
+#' 
 #' hs2mm2ss.orth <- ortholog_match(
-#'   species_list = c("human", "mouse", "pig"), host = "asia.ensembl.org"
+#'   species_list = c("human", "mouse", "pig"),
+#'   host = "https://asia.ensembl.org"
 #' )
 #'
-#' # Choose to use an archived host for ENSEMBL, which contains old genome releases
+#' ## Use archived host for ENSEMBL, which contains old genome releases
 #' hs2mm2ss.orth <- ortholog_match(
-#'   species_list = c("human", "mouse", "pig"), host = "nov2020.archive.ensembl.org"
+#'   species_list = c("human", "mouse", "pig"),
+#'   host = "https://nov2020.archive.ensembl.org"
 #' )
 #' @export
 
@@ -80,9 +105,10 @@ ortholog_match <- function(species_list, species_anchor, host) {
     mart = biomaRt::useMart("ensembl", verbose = TRUE, host = host)
   }
   
-  # check if all specified species are supported (by comparing against list_species()),
-  # and get their abbreviations which will be used by biomaRt
-  species.ok   <- list_species()
+  # check if all specified species are supported by comparing against the
+  # information retrieved by list_supported_species(), and get their
+  # abreviations which will be used by biomaRt
+  species.ok   <- list_supported_species()
   species_list <- tolower(species_list)
   species_abbr <- vector("character", length(species_list))
   
@@ -90,10 +116,13 @@ ortholog_match <- function(species_list, species_anchor, host) {
   for(sp in seq_along(species_list)){
     if(! species_list[sp] %in% tolower(species.ok$Species)){
       stop(
-        species_list[sp], " is not supported. Use list_species() to list all supported species."
+        species_list[sp],
+        " is not supported.",
+        " Use list_supported_species() to list all supported species."
       )
     }
-    species_abbr[sp] <- species.ok$Dataset[which(tolower(species.ok$Species) == species_list[sp])]
+    idx <- which(tolower(species.ok$Species) == species_list[sp])
+    species_abbr[sp] <- species.ok$Dataset[idx]
     message(species_list[sp], " => ", species_abbr[sp])
   }
   
@@ -104,7 +133,8 @@ ortholog_match <- function(species_list, species_anchor, host) {
   message("\nConnect to biomaRt for each species ...")
   for(i in seq_along(species_list)){
     conn[[i]] <- biomaRt::useDataset(
-      paste0(species_abbr[i], "_gene_ensembl"), mart, verbose = FALSE
+      paste0(species_abbr[i], "_gene_ensembl"),
+      mart, verbose = FALSE
     )
     species_data[[i]] <- biomaRt::getBM(
       attributes = c(
@@ -132,14 +162,16 @@ ortholog_match <- function(species_list, species_anchor, host) {
   else{
     if(species_anchor %in% species_list){
       anchor_idx <- which(species_list == species_anchor)
-      message("\nUsing user-specified anchor species: ", species_anchor)
+      message(
+        "\nUsing user-specified anchor species: ", species_anchor
+      )
     }
     else{
       stop("\nAnchor species is not in the species list.")
     }
   }
      
-  anchor   <- species_list[anchor_idx]
+  anchor      <- species_list[anchor_idx]
   anchor_abbr <- species_abbr[anchor_idx]
   anchor_data <- species_data[[anchor_idx]]
       
@@ -177,7 +209,9 @@ ortholog_match <- function(species_list, species_anchor, host) {
       values  = anchor_data$ensembl_gene_id
     )
    
-    colnames(homolog_info) <- c("anchor_gene_id", "anchor_gene_name", "target_gene_id")
+    colnames(homolog_info) <- c(
+      "anchor_gene_id", "anchor_gene_name", "target_gene_id"
+      )
     homolog_info <- homolog_info[homolog_info$target_gene_id != "", ]
     message("orthologous genes: ",nrow(homolog_info))
    
@@ -208,7 +242,9 @@ ortholog_match <- function(species_list, species_anchor, host) {
     colnames(target_orthologs)[colnames(target_orthologs) == "target_gene_id"] <- 
        paste0(target, "_gene_id")
     target_orthologs <- dplyr::select(target_orthologs, 2:3, 1, 4:6)
-    ortholog_list[[target]] <- target_orthologs[order(target_orthologs$anchor_gene_id),]
+    ortholog_list[[target]] <- target_orthologs[
+      order(target_orthologs$anchor_gene_id),
+      ]
   }
    
   ## merge data from all species
@@ -219,7 +255,9 @@ ortholog_match <- function(species_list, species_anchor, host) {
   unified_matrix <- ortholog_list[[anchor]]
   for(sp in names(ortholog_list)){
     if(sp != anchor){
-      sp_data <- ortholog_list[[sp]][, c("anchor_gene_id", paste0(sp, "_gene_id"))]
+      sp_data <- ortholog_list[[sp]][
+        , c("anchor_gene_id", paste0(sp, "_gene_id"))
+        ]
       # merge the common genes across species
       unified_matrix <- merge(
         unified_matrix,
@@ -264,8 +302,12 @@ ortholog_match <- function(species_list, species_anchor, host) {
   attr(formatted_orthologs, "Species_anchor") <- anchor
   attr(formatted_orthologs, "Species")        <- species_list
   attr(formatted_orthologs, "SpeciesAbbr")    <- species_abbr
-  attr(formatted_orthologs, "GeneID_matrix")  <- extract_ortholog_matrix(formatted_orthologs, "GeneID")
-  attr(formatted_orthologs, "GeneName_matrix")  <- extract_ortholog_matrix(formatted_orthologs, "GeneName")
+  attr(formatted_orthologs, "GeneID_matrix")  <- extract_ortholog_matrix(
+    formatted_orthologs, "GeneID"
+    )
+  attr(formatted_orthologs, "GeneName_matrix")  <- extract_ortholog_matrix(
+    formatted_orthologs, "GeneName"
+    )
   
   return(formatted_orthologs)  
 }

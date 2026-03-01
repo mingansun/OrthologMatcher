@@ -7,8 +7,8 @@
 summarize_ortholog_gene(x, group = c("genetype", "chrom"))
 }
 \arguments{
-\item{x}{Data frame with ortholog annotations for corresponding species. It is generated
-using ortholog_match(species_list=c()).}
+\item{x}{Data frame with ortholog annotations for corresponding species. It is
+generated using ortholog_match(species_list=c()).}
 
 \item{group}{genetype or chrom, the number of genes for each group based on specified
 tags will be listed.}
@@ -20,7 +20,10 @@ Data frame with the count of genes for each genetype or chrom in each species.
 Summarize the orthologues for each genetype or chromosome
 }
 \examples{
+# get ortholog matching information
 hs2mm2ss.orth <- ortholog_match(species_list=c("human", "mouse","pig"))
+
+# summarize the obtained ortholog matching information
 summarize_ortholog_gene(hs2mm2ss.orth, "genetype")
 
 }
